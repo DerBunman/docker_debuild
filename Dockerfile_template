@@ -1,0 +1,79 @@
+FROM %TARGET%
+
+ARG TARGET
+ENV TARGET=%TARGET%
+
+ADD data/passwd /etc/passwd
+ADD data/group /etc/group
+ADD data/_build.sh /build/build.sh
+RUN chmod 755 /build/build.sh
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN  echo 'Acquire::http { Proxy "http://192.168.178.162:3142"; };' \
+	>> /etc/apt/apt.conf.d/01proxy
+
+RUN apt-get update \
+	&& apt-get upgrade -y \
+		--allow-downgrades \
+		--allow-remove-essential \
+		--allow-change-held-packages \
+	&& apt-get install -y \
+		--allow-downgrades \
+		--allow-remove-essential \
+		--allow-change-held-packages \
+		--no-install-recommends \
+		vim \
+		sudo \
+		dpkg-dev \
+		lintian \
+		build-essential \
+		figlet \
+		git-buildpackage \
+		dh-make \
+		devscripts \
+		cowbuilder \
+		eatmydata \
+		cmake \
+		ccache \
+		pbuilder \
+		git \
+		cmake \
+		fakeroot \
+		quilt \
+		cmake-data \
+		pkg-config \
+		fontconfig \
+		libcairo2-dev \
+		libxcb1-dev \
+		libxcb-util0-dev \
+		libxcb-randr0-dev \
+		libxcb-composite0-dev \
+		python-xcbgen \
+		xcb-proto \
+		libxcb-image0-dev \
+		libxcb-ewmh-dev \
+		libxcb-icccm4-dev \
+		libxcb-xkb-dev \
+		libxcb-xrm-dev \
+		libxcb-cursor-dev \
+		libasound2-dev \
+		libpulse-dev \
+		i3-wm \
+		libjsoncpp-dev \
+		libmpdclient-dev \
+		libcurl4-openssl-dev \
+		libnl-genl-3-dev
+
+ENV GNUPGHOME=/build/home/.gnupg
+ENV CCACHE_DIR=/build/home/.ccache
+ENV CCACHE_CONFIGPATH=/build/home/.ccache/ccache.conf
+ENV DEBSIGN_KEYID=19C24480B5E6AD51EFF86145C11548368EFA214D
+ENV DEBRELEASE_DEBS_DIR=/build/src/_debs
+ENV HOME=/build/home
+
+VOLUME /build/src
+VOLUME /build/home
+
+WORKDIR /build
+ENTRYPOINT ["/usr/bin/setpriv", "--reuid=1000", "--regid=1000", "--init-groups", "/build/build.sh"]

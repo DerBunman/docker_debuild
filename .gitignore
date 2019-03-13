@@ -1,0 +1,4 @@
+data/volumes/home/*
+!data/volumes/home/.gitkeep
+data/volumes/src/*
+!data/volumes/src/.gitkeep
