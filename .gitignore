@@ -1,4 +1,8 @@
 data/volumes/home/*
 !data/volumes/home/.gitkeep
-data/volumes/src/*
+data/volumes/s8rc/*
 !data/volumes/src/.gitkeep
+debs/.gitkeep/*
+!debs/.gitkeep/.gitkeep
+data/volumes/src/
+data/volumes/home/

@@ -5,13 +5,14 @@ ENV TARGET=%TARGET%
 
 ADD data/passwd /etc/passwd
 ADD data/group /etc/group
-ADD data/_build.sh /build/build.sh
-RUN chmod 755 /build/build.sh
+
+ADD data/_build.sh /build.sh
+RUN chmod 755 /build.sh
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN  echo 'Acquire::http { Proxy "http://192.168.178.162:3142"; };' \
-	>> /etc/apt/apt.conf.d/01proxy
+#RUN  echo 'Acquire::http { Proxy "http://192.168.178.162:3142"; };' \
+#	>> /etc/apt/apt.conf.d/01proxy
 
 RUN apt-get update \
 	&& apt-get upgrade -y \
@@ -63,7 +64,10 @@ RUN apt-get update \
 		libjsoncpp-dev \
 		libmpdclient-dev \
 		libcurl4-openssl-dev \
-		libnl-genl-3-dev
+		libnl-genl-3-dev \
+	&& apt-get clean autoclean \
+	&& apt-get autoremove -y \
+	&& rm -rf /var/lib/{apt,dpkg,cache,log}/
 
 ENV GNUPGHOME=/build/home/.gnupg
 ENV CCACHE_DIR=/build/home/.ccache
@@ -72,8 +76,13 @@ ENV DEBSIGN_KEYID=19C24480B5E6AD51EFF86145C11548368EFA214D
 ENV DEBRELEASE_DEBS_DIR=/build/src/_debs
 ENV HOME=/build/home
 
+VOLUME /build/
 VOLUME /build/src
 VOLUME /build/home
 
+#`CMD cp data/_build.sh /build.sh
+#CMD chmod 755 /build/build.sh
+
 WORKDIR /build
-ENTRYPOINT ["/usr/bin/setpriv", "--reuid=1000", "--regid=1000", "--init-groups", "/build/build.sh"]
+ENTRYPOINT ["/build.sh"]
+#ENTRYPOINT ["/usr/bin/setpriv", "--reuid=1000", "--regid=1000", "--init-groups", "/build/build.sh"]

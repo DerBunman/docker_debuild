@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 seconds_script_start=$(date +%s)
 action=$1
-[[ $# -gt 0 ]] && shift
+[ $# -gt 0 ] && shift
 FIGLET=$(which figlet)
 
 function info() {
@@ -81,9 +81,12 @@ has_error=false
 
 info "removing gpg socket files (if they exist)"
 find ${config[mountpoint_home]}/.gnupg/ -iname "S.*" -delete
-
+#cp data/_build.sh "$(pwd)/debs/${config[container_name]}/build.sh"
 
 [[ has_error = true ]] && exit 1
+
+# dir for finished debs
+mkdir -p "$(dirname $0)/debs/${config[container_name]}"
 
 if [ "shell" = "${action}" ] || [ "run" = "${action}" ]; then
 	typeset -a pre_flight_check_errors
@@ -115,14 +118,14 @@ if [ "build" = "${action}" ]; then
 	cat $(dirname $0)/Dockerfile_template | sed "s/%TARGET%/${opts[--target]}/" \
 		> $(dirname $0)/Dockerfile.$$
 
-	stdbuf -i0 -o0 -e0 \
+	#stdbuf -i0 -o0 -e0 \
 	docker build \
-		-f $(dirname $0)/Dockerfile.$$ \
+		-f "$(dirname $0)/Dockerfile.$$" \
 		--label ${config[image_name]} \
 		--tag ${config[image_name]} \
-		$(pwd) \
-	| sed 's/^/   * /'
-	$(dirname $0)/Dockerfile_template
+		$(pwd) #\
+	#| sed 's/^/   * /'
+	rm "$(dirname $0)/Dockerfile.$$"
 
 elif [ "shell" = "${action}" ]; then
 	#      _          _ _ 
@@ -134,11 +137,11 @@ elif [ "shell" = "${action}" ]; then
 	docker run --rm -it \
 		--name "${config[container_name]}" \
 		--label "${config[container_name]}" \
+		-v "$(pwd)/debs/${config[container_name]}:/build" \
 		-v "${config[mountpoint_home]}:/build/home" \
 		-v "${config[mountpoint_src]}:/build/src" \
 		--entrypoint /bin/bash \
-		${config[image_name]} \
-		$*
+		${opts[--image-name]}
 
 
 elif [ "run" = "${action}" ]; then
@@ -153,6 +156,9 @@ elif [ "run" = "${action}" ]; then
 		$0 build \
 			--target ${config[target]} \
 			--image-name ${config[image_name]} \
+			-v "$(pwd)/debs/${config[container_name]}:/build/" \
+			-v "${config[mountpoint_home]}:/build/home" \
+			-v "${config[mountpoint_src]}:/build/src" \
 			--skip-info true || {
 			error "building image failed"
 			exit 1
@@ -164,12 +170,13 @@ elif [ "run" = "${action}" ]; then
 	docker container inspect "${config[container_name]}" 1> /dev/null 2>&1
 	if [[ $? -gt 0 ]]; then
 		info "starting new container"
-		docker run --rm -i \
+		docker run --rm -it \
 			--name "${config[container_name]}" \
 			--label "${config[container_name]}" \
+			-v "$(pwd)/debs/${config[container_name]}:/build/" \
 			-v "${config[mountpoint_home]}:/build/home" \
 			-v "${config[mountpoint_src]}:/build/src" \
-			${config[image_name]}
+			${opts[--image-name]}
 	else
 		info "%B%F{red}there is already a container named %U${config[container_name]}%u%f%b"
 		print -P "\n       You can delete the container withe the following command:"

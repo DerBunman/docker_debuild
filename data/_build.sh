@@ -21,8 +21,10 @@ if [ $# -gt 0 ]; then
 	exit
 fi
 
+cd /src
+
 for dir in src/*; do
-	mkdir -p /build/srv/_debs
+	mkdir -p /build/src/_debs
 	[ "_debs" = "$dir" ] && continue
 	test -d "${dir}" || continue
 	echo building $dir | $FIGLET
