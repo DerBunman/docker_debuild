@@ -1,5 +1,5 @@
 # Pull base image.
-FROM ubuntu_u2p:latest
+FROM docker_debuild:bionic_staged
 
 ADD build.sh /
 ADD install.zsh /
