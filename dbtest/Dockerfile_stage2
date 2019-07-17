@@ -1,5 +1,5 @@
 # Pull base image.
-FROM docker_debuild:bionic
+FROM lwerner/docker_debuild:bionic-staged
 
 ADD build.sh /
 ADD install.zsh /
