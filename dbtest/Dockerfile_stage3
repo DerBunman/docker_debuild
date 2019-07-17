@@ -1,0 +1,8 @@
+# Pull base image.
+FROM lwerner/docker_debuild:bionic
+
+ADD validate.zsh /
+ADD validate2.zsh /
+ADD validate.png /
+
+RUN ls -l / && chmod 755 /validate2.zsh /validate.zsh && /bin/zsh -c /validate.zsh

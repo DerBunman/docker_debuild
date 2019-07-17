@@ -14,7 +14,7 @@ RUN \
   locale-gen en_US en_US.UTF-8
 
 RUN \
-  apt-get install -y --ignore-missing python moreutils build-essential fakeroot devscripts dpkg-dev equivs curl wget powerline tmux mc ranger detox pv figlet net-tools apt-file sysfsutils p7zip-full unp unrar unzip grc silversearcher-ag shellcheck pass xbindkeys xbindkeys-config xdotool x11-xserver-utils compton arandr fonts-roboto fonts-roboto-hinted xclip slop aosd-cat compton libnotify-bin zathura-cb zathura zathura-djvu zathura-pdf-poppler zathura-ps pavucontrol arandr udiskie feh xclip lxappearance xscreensaver-screensaver-webcollage xscreensaver xscreensaver-screensaver-bsod xscreensaver-gl-extra xscreensaver-gl xscreensaver-data-extra rxvt-unicode-256color i3 golang-go libxtst-dev vim exuberant-ctags vim-gtk3 && \
+  apt-get install -y --ignore-missing python moreutils build-essential fakeroot devscripts dpkg-dev equivs curl wget powerline tmux mc ranger detox pv figlet net-tools apt-file sysfsutils p7zip-full unp unrar unzip grc silversearcher-ag shellcheck pass xbindkeys xbindkeys-config xdotool x11-xserver-utils compton arandr fonts-roboto fonts-roboto-hinted xclip slop aosd-cat compton libnotify-bin zathura-cb zathura zathura-djvu zathura-pdf-poppler zathura-ps pavucontrol arandr udiskie feh xclip lxappearance xscreensaver-screensaver-webcollage xscreensaver xscreensaver-screensaver-bsod xscreensaver-gl-extra xscreensaver-gl xscreensaver-data-extra rxvt-unicode-256color i3 golang-go libxtst-dev vim exuberant-ctags vim-gtk3 perceptualdiff apt-utils neofetch && \
   git clone --recursive https://github.com/DerBunman/DieBenutzerumgebung ~/.repos/dotfiles
 #
 #ADD build.sh /

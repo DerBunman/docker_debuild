@@ -1,3 +1,8 @@
-docker build -t ubuntu_u2p:latest $(pwd)
+# download and install apt packages and then clone git repo
+docker build -t lwerner/docker_debuild:bionic-staged $(pwd)
 
-docker image build --file=Dockerfile_u2d -t ubuntu_x $(pwd); docker container run --name=dfp --rm ubuntu_x:latest
+# validate that the install is as expected
+docker build -t docker_debuild:bionic-validated -f Dockerfile_stage3
+
+
+#docker image build --file=Dockerfile_u2d -t ubuntu_x $(pwd); docker container run --name=dfp --rm ubuntu_x:latest

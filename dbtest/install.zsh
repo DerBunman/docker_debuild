@@ -11,15 +11,15 @@ xrdb -load ~/.Xresources
 		xrdb -load ~/.Xresources
 	done
 
-	xdotool windowunmap $(xdotool search --classname "xterm")
-	i3 &
-	sleep 30
-	urxvt -e zsh -c "neofetch; sleep 120" &
-	sleep 30
-	img=neofetch1.png;
-	scrot $img;
-	curl -s -X POST -F "image=@$img" https://doublefun.net/media/x.php
-	pkill xterm
+#	xdotool windowunmap $(xdotool search --classname "xterm")
+#	i3 &
+#	sleep 30
+#	urxvt -e zsh -c "neofetch; sleep 120" &
+#	sleep 30
+#	img=neofetch1.png;
+#	scrot $img;
+#	curl -s -X POST -F "image=@$img" https://doublefun.net/media/x.php
+#	pkill xterm
 
 }| tee /dfp_log.txt
 
