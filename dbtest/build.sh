@@ -2,8 +2,11 @@
 zmodload zsh/parameter
 cd "$HOME" || exit
 
+touch /scriptout.txt
+{ tail -f /scriptout.txt | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' } &
 #git clone --recursive https://github.com/DerBunman/DieBenutzerumgebung ~/.repos/dotfiles
 
+# update the cloned repo. has been checked out in Dockerfile
 cd ~/.repos/dotfiles
 git pull --recurse-submodules
 
@@ -15,20 +18,9 @@ mkdir -p ~/.config/dotfiles/dotfiles/host_flags/
 echo "has_x11 has_root install_packages assume_yes" > \
 	~/.config/dotfiles/dotfiles/host_flags/checked
 
-#apt --yes install python apt-utils neofetch
-
+# start install script in xterm in xvfb :)
 xvfb-run -n 99 \
 	--server-args="-screen 0 1360x768x16" \
 	--auth-file ~/.Xauthority \
-	xterm -e "/install.zsh" #&
+	xterm -e "/install.zsh | tee /scriptout.txt" #&
 
-#sleep 2 && tail -f /dfp_log.txt &
-#
-#while (( ${#jobstates} )); do
-#	sleep 5
-#	echo JOBS ${jobstates}
-#	img=1.png;
-#	DISPLAY=:99 scrot $img || exit
-#	curl -s -X POST -F "image=@$img" https://doublefun.net/media/x.php
-#done
-#
